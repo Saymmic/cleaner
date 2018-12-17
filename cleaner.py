@@ -1,54 +1,29 @@
 #!/usr/bin/python3
 """
-I assume that files that will be processed by this script will not be so big so for simplicity and convinience
-I'm loading whole file into memory.
-# TODO rewrite it and create README
+Keep in mind that this script will load whole file that is currently processing into memory.
 """
 import argparse
 import os
 import re
 from collections import defaultdict
 from typing import Dict, Set, List, Pattern, DefaultDict, Tuple
-
-OPENING = '# ▼▼▼ MY TEMP CODE. DELETE ME ▼▼▼'
-ENDING = '# ▲▲▲ MY TEMP CODE. DELETE ME ▲▲▲'
-
-FILE_EXTENSIONS_TO_PROCESS = {
-    '.py',
-    '.html',
-    'js',
-    'hbs',
-}
-
-EXCLUDE_DIRS = {
-    r'\.idea',
-    r'\.git',
-}
-
-
-def has_required_extension(file_name: str, ) -> bool:
-    _, file_extension = os.path.splitext(file_name)
-    return file_extension in FILE_EXTENSIONS_TO_PROCESS
-
-
-def get_exclude_regex(raw_regexes: Set[str]) -> Pattern:
-    return re.compile('|'.join(raw_regexes))
-
-
-def save_file(path: str, lines: List[str]) -> None:
-    with open(path, 'w') as f:
-        f.writelines(lines)
-
+import config
 
 def delete_line_processor(line: str) -> None:
+    """Delete the line"""
     return None
 
 
 def comment_line_processor(line: str) -> str:
+    """Comment out line."""
+    # Do not comment commented line
+    if line.strip().startswith('#'):
+        return line
     return f'# {line}'
 
 
 def uncomment_line_processor(line: str) -> str:
+    """Uncomment line."""
     return line.replace('# ', '', 1)
 
 
@@ -59,12 +34,30 @@ LINE_PROCESSORS = {
 }
 
 
+def has_required_extension(file_name: str) -> bool:
+    """Check if the file has required extension."""
+    _, file_extension = os.path.splitext(file_name)
+    return file_extension in config.FILE_EXTENSIONS_TO_PROCESS
+
+
+def get_exclude_regex(raw_regexes: Set[str]) -> Pattern:
+    """Compile regexes for excluding paths."""
+    return re.compile('|'.join(raw_regexes))
+
+
+def save_file(path: str, lines: List[str]) -> None:
+    """Save lines to file."""
+    with open(path, 'w') as f:
+        f.writelines(lines)
+
+
 class ClosingTagNotFoundException(Exception):
     pass
 
 
 def clean(path: str, line_processor: callable) -> Dict[str, List[tuple]]:
-    exclude = get_exclude_regex(EXCLUDE_DIRS)
+    """Process all tagged lines with given line_processor recursively."""
+    exclude = get_exclude_regex(config.EXCLUDE_DIRS)
     processed_lines: DefaultDict[str, List[Tuple[int, str]]] = defaultdict(list)
 
     for root, _, file_names in os.walk(path):
@@ -80,7 +73,7 @@ def clean(path: str, line_processor: callable) -> Dict[str, List[tuple]]:
                     lines_to_save: List[str] = []
                     for line_number, line in enumerate(f.readlines()):
 
-                        if OPENING in line:
+                        if config.OPENING in line:
                             process_line = True
 
                         if process_line:
@@ -91,7 +84,7 @@ def clean(path: str, line_processor: callable) -> Dict[str, List[tuple]]:
                         else:
                             lines_to_save.append(line)
 
-                        if ENDING in line:
+                        if config.ENDING in line:
                             process_line = False
 
                 # If here process_line flag is still True then raise exception caouse it means that there is no closing tag.
@@ -104,7 +97,6 @@ def clean(path: str, line_processor: callable) -> Dict[str, List[tuple]]:
 
 
 if __name__ == '__main__':
-    parser = argparse
     parser = argparse.ArgumentParser(description='Clean files from tagged code.')
     parser.add_argument(
         '--path',
@@ -113,6 +105,7 @@ if __name__ == '__main__':
         help='Path to directory with files to process.',
     )
     parser.add_argument(
+        '-p',
         '--processor',
         default='delete',
         help='Line processor. What to do with tagged code?',
@@ -127,6 +120,4 @@ if __name__ == '__main__':
         for processed_line in processed_lines:
             print(f'\t{processed_line[0]}: {processed_line[1]}', end='')
 
-# TODO: Extract config
-# TODO: Add proper readme
-#
+# TODO: Commenting processor for different file extensions.

@@ -2,29 +2,20 @@
 
 ##### A tool that cleans after you
 
-TODO: Rewrite it
-
-Have you ever programming in hurry adding tons of pdb set traces or some code that helps
-you debug along with proper changes? After all you need to clean up unwanted code.
-This tool will do that for you!
-
-All you need to do is to import live templates to your pycharm arsenal and tag your `fast code`.
-After all this scripts will delete or comments out code that is in between tags.
+Comments out or deletes code between tags.
+Especially useful when you are doing a lot of changes for debugging (setting traces, printing some stuff etc.)
+in big codebase within many files.
+So after all you no need to worry about removing redundant code.
 
 ### Installation
-TODO: Make it more clear and automatic
-
 * `git clone https://github.com/Symonen/cleaner`
 * `ln -s <path_to_cleaner> /usr/bin/clean`
-* I suggest to create live template in pycharm that wraps your code into a tags
+* I suggest to create live template in pycharm that wraps your code into a tags very convinient
 
-And then you can just type `clean`
+And then you can just type `clean` in your project dir.
 
 
 ### Example
-TODO: Visulize it and give user proper example
-
 How it works:
-* Iterates recursively over files including only files that have required file extensions 
-and excluding unwanted dirs
+* Iterates recursively over files in specified path.
 * Deleting or commenting out code between tags
