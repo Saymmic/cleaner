@@ -83,10 +83,10 @@ def test_clean__rise_exception_where_no_closing_tag():
     path = '.'
     with patch('builtins.open', mock_open(read_data=FILE_WITHOUT_CLOSING_TAG)), \
             patch('os.walk', mock_walk), \
-            patch('cleaner.FILE_EXTENSIONS_TO_PROCESS', {'.py', '.js'}), \
+            patch('config.FILE_EXTENSIONS_TO_PROCESS', {'.py', '.js'}), \
          patch('cleaner.save_file', MagicMock()) as save_file_mock, \
-            patch('cleaner.OPENING', '# ▼▼▼ MY TEMP CODE. DELETE ME ▼▼▼'), \
-            patch('cleaner.ENDING', '# ▲▲▲ MY TEMP CODE. DELETE ME ▲▲▲'), \
+            patch('config.OPENING', '# ▼▼▼ MY TEMP CODE. DELETE ME ▼▼▼'), \
+            patch('config.ENDING', '# ▲▲▲ MY TEMP CODE. DELETE ME ▲▲▲'), \
             pytest.raises(cleaner.ClosingTagNotFoundException):
         cleaner.clean(path, line_processor)
     save_file_mock.assert_not_called()

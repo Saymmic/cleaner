@@ -5,9 +5,11 @@ name = "pypi"
 
 [dev-packages]
 pdbpp = "*"
+mypy = "*"
+pytest = "*"
+pudb = "*"
 
 [packages]
-pytest = "*"
 
 [requires]
 python_version = "3.6"
