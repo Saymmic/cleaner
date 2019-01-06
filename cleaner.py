@@ -107,7 +107,7 @@ if __name__ == '__main__':
         help='Uncomment tagged code.',
     )
     group.add_argument(
-        '-ch',
+        '-d',
         '--check',
         action='store_true',
         help='Check which line will be affected.',
@@ -134,3 +134,5 @@ if __name__ == '__main__':
             print(f'\t{processed_line[0]}: {processed_line[1]}', end='')
 
 # TODO: Process only changed files option.
+# TODO: Fix tests.
+# TODO: Write more tests.
