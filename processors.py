@@ -26,8 +26,14 @@ def uncomment_line_processor(line: str, comment_symbol: CommentSymbol, tag: Tag)
     return sub(f'{comment_symbol.CLOSING}', '', line)
 
 
+def check_line_processor(line: str, comment_symbol: CommentSymbol, tag: Tag) -> str:
+    """Delete the line"""
+    return line
+
+
 LINE_PROCESSORS = {
     'delete': delete_line_processor,
     'comment': comment_line_processor,
     'uncomment': uncomment_line_processor,
+    'check': check_line_processor,
 }

@@ -106,6 +106,12 @@ if __name__ == '__main__':
         action='store_true',
         help='Uncomment tagged code.',
     )
+    group.add_argument(
+        '-ch',
+        '--check',
+        action='store_true',
+        help='Check which line will be affected.',
+    )
     args = parser.parse_args()
 
     print(args)
@@ -113,6 +119,8 @@ if __name__ == '__main__':
     if args.comment:
         line_processor = LINE_PROCESSORS['comment']
     elif args.uncomment:
+        line_processor = LINE_PROCESSORS['uncomment']
+    elif args.check:
         line_processor = LINE_PROCESSORS['uncomment']
     else:
         line_processor = LINE_PROCESSORS['delete']
