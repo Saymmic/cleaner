@@ -22,6 +22,12 @@ FILE_EXTENSIONS_TO_PROCESS = {
     '.go',
     '.js',
 }
+
+_supported_file_extensions = {fe for fes in FILE_EXTENSION_COMMENT_SYMBOL for fe in fes}
+unsupported_file_extensions = FILE_EXTENSIONS_TO_PROCESS - _supported_file_extensions
+if unsupported_file_extensions:
+    raise NotImplementedError(f'File extensions are not supported yet {unsupported_file_extensions}')
+
 EXCLUDE_DIRS = {
     r'\.idea',
     r'\.git',

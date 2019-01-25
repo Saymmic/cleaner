@@ -117,7 +117,6 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-    print(args)
     # TODO: Do it better
     if args.comment:
         line_processor = LINE_PROCESSORS['comment']
