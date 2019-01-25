@@ -59,29 +59,32 @@ def clean(path: str, line_processor: callable) -> Dict[str, List[tuple]]:
         for file_name in file_names:
             if has_required_extension(file_name):
                 file_path = os.path.join(root, file_name)
-                with open(file_path, 'r') as f:
-                    process_line = False
-                    lines_to_save: List[str] = []
-                    tag, comment_symbol = get_comment_tags(file_name)
-                    for line_number, line in enumerate(f.readlines()):
+                try:
+                    with open(file_path, 'r') as f:
+                        process_line = False
+                        lines_to_save: List[str] = []
+                        tag, comment_symbol = get_comment_tags(file_name)
+                        for line_number, line in enumerate(f.readlines()):
 
-                        if tag.START in line:
-                            process_line = True
+                            if tag.START in line:
+                                process_line = True
 
-                        if process_line:
-                            processed_lines[file_path].append((line_number, line))
-                            lines_to_save.append(line_processor(line, comment_symbol, tag))
-                        else:
-                            lines_to_save.append(line)
+                            if process_line:
+                                processed_lines[file_path].append((line_number, line))
+                                lines_to_save.append(line_processor(line, comment_symbol, tag))
+                            else:
+                                lines_to_save.append(line)
 
-                        if tag.END in line:
-                            process_line = False
+                            if tag.END in line:
+                                process_line = False
 
-                # If here process_line flag is still True then raise exception cause it means that there is no closing tag.
-                if process_line:
-                    raise ClosingTagNotFoundException(f'In file: {file_path} there is no closing tag!')
+                    # If here process_line flag is still True then raise exception cause it means that there is no closing tag.
+                    if process_line:
+                        raise ClosingTagNotFoundException(f'In file: {file_path} there is no closing tag!')
 
-                save_file(file_path, lines_to_save)
+                    save_file(file_path, lines_to_save)
+                except PermissionError:
+                    print(f'Permission denied for {file_path}')
 
     return processed_lines
 
@@ -136,3 +139,4 @@ if __name__ == '__main__':
 # TODO: Process only changed files option.
 # TODO: Fix tests.
 # TODO: Write more tests.
+# TODO: Logging instead of printing
